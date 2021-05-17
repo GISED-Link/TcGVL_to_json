@@ -33,6 +33,12 @@ def add_BasicType(namespace, item, str_array):
     elif item.var_type in definitions.keywords_float:
         return 'fbJson.AddLreal(' + namespace + item.name + str_array + ');\n'
 
+    elif item.var_type in definitions.keywords_bool:
+        return 'fbJson.AddBool(' + namespace + item.name + str_array + ');\n'
+
+    else:
+        return ''
+
 
 def add_SimpleVariable(namespace, item: definitions.SimpleVariable):
     res = 'fbJson.AddKey(\'' + item.name + '\');\n'

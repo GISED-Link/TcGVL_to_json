@@ -72,6 +72,9 @@ def add_valueItem(namespace, item, json_parent, array_level):
         elif item.var_type in definitions.keywords_float:
             res = res + namespace + var_name + ' := TO_' + item.var_type + '(' + JSON_FB + '.GetDouble(' + prefixed_v + '));\n'
 
+        elif item.var_type in definitions.keywords_bool:
+            res = res + namespace + var_name + ' := TO_' + item.var_type + '(' + JSON_FB + '.GetBool(' + prefixed_v + '));\n'
+
         res = res + 'END_IF\n'
         return res
 
