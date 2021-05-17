@@ -31,7 +31,7 @@ def add_arrayStart(item, json_parent, array_level):
     prefixed_p = JSON_PREFIX + json_parent
     res = ''
     res = res + 'IF ' + JSON_FB + '.IsArray(' + prefixed_p + ') THEN \n'
-    res = res + 'FOR ' + 'i' * array_level + ' := 0 TO MIN(TO_INT(' + JSON_FB + '.GetArraySize(' + prefixed_p + ')), ' + item.stop_at + ' - ' + item.start_at + ' + 1) BY 1 DO\n'
+    res = res + 'FOR ' + 'i' * array_level + ' := 0 TO MIN(TO_INT(' + JSON_FB + '.GetArraySize(' + prefixed_p + ')) - 1, ' + item.stop_at + ' - ' + item.start_at + ') BY 1 DO\n'
     res = res + JSON_PREFIX + 'i' * array_level + ' := ' + JSON_FB + '.GetArrayValueByIdx(' + prefixed_p + ', TO_UDINT(' + 'i' * array_level + '));\n'
     return res
 
