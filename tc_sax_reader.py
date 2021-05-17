@@ -121,6 +121,8 @@ def parse_reader(object_list, start_namespace):
             res = res + add_arrayEnd(item)
             res = res + add_objectEnd(item, parents[-1])
             array_level = array_level - 1
+            parents.pop()
+            parents.pop()
 
         elif isinstance(item, definitions.SimpleVariable):
             res = res + add_valueItem(namespace, item, parents[-1], 0)
