@@ -7,7 +7,8 @@ def extract_from_string(text_to_search, search_for_json, namespace):
     token_specification = [
         ('VARIABLE', definitions.find_var),
         ('ARRAY', definitions.find_var_array),
-        ('TO_JSON', definitions.find_to_json_attribute)
+        ('TO_JSON', definitions.find_to_json_attribute),
+        ('EXTENDED', definitions.find_extends)
     ]
     tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
     flag_to_json = False
@@ -23,6 +24,11 @@ def extract_from_string(text_to_search, search_for_json, namespace):
                 yield definitions.ArrayVariable(namespace, mo.groups()[index], mo.groups()[index + 1],
                                                 mo.groups()[index + 2], mo.groups()[index + 3], mo.groups()[index + 4])
 
+        elif kind == 'EXTENDED' and not search_for_json:
+            print(f'Extended type found with name {mo.groups()[index]}')
+            namespace_split, var_name, *garbage = namespace.rsplit('.', 2)
+            yield definitions.ExtendedVariable(namespace_split + '.', var_name, mo.groups()[index])
+
         if kind == 'TO_JSON':
             flag_to_json = True
         elif flag_to_json:
@@ -34,6 +40,7 @@ def add_start_object(object_local, var_list):
         var_list.append(
             definitions.ArrayVariableStart(object_local.namespace, object_local.name, object_local.start_at,
                                            object_local.stop_at))
+
     else:
         var_list.append(
             definitions.ObjectVariableStart(object_local.namespace, object_local.name, object_local.var_type))
@@ -57,9 +64,16 @@ def check_if_type_known_from_token(token_local, var_list, searched_path):
         print('search type ' + token_local.var_type)
         file_name = search_file(searched_path, token_local.var_type)
         if file_name is not None:
-            add_start_object(token_local, var_list)
-            get_token_from_files(file_name, token_local.namespace + token_local.name + '.', var_list, searched_path)
-            add_end_object(token_local, var_list)
+
+            if isinstance(token_local, definitions.ExtendedVariable):
+                print(f'file name of extended file is {file_name}')
+                print(f'namespace is {token_local.namespace}')
+                print(f'end_name is {token_local.end_name}')
+                get_token_from_files(file_name, token_local.namespace + token_local.end_name + '.', var_list, searched_path)
+            else:
+                add_start_object(token_local, var_list)
+                get_token_from_files(file_name, token_local.namespace + token_local.name + '.', var_list, searched_path)
+                add_end_object(token_local, var_list)
         else:
             print('file not found')
 
@@ -90,7 +104,7 @@ def get_token_from_files(type_file_name, namespace, variable_to_parse, search_pa
 
     # Since we append periodically, we search until the end
     except IndexError:
-        print(f'ouf... was a hard work. {extract_index} type has been extracted')
+        print(f'{type_file_name.rsplit("/", 1)[1]} extraction complete. {extract_index} type has been extracted')
         pass
 
 

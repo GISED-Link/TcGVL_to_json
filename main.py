@@ -77,7 +77,7 @@ def generate():
 if __name__ == '__main__':
 
     prj_config = load_config()
-
+    
     root = tk.Tk()
     root.title('tc json st code generator')
     root.geometry("800x600")
