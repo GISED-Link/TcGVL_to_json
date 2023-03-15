@@ -25,7 +25,21 @@ def add_endArray():
 
 def add_BasicType(namespace, item, str_array):
     if item.var_type in definitions.keywords_int:
-        return 'fbJson.AddDint(' + namespace + item.name + str_array + ');\n'
+        match item.var_type:
+            case "DWORD":
+                return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
+            case "ULINT":
+                return 'fbJson.AddUlint(' + namespace + item.name + str_array + ');\n'
+            case "LWORD":
+                return 'fbJson.AddUlint(' + namespace + item.name + str_array + ');\n'
+            case "LINT":
+                return 'fbJson.AddLint(' + namespace + item.name + str_array + ');\n'
+            case "DWORD":
+                return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
+            case "UDINT":
+                return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
+            case _:
+                return 'fbJson.AddDint(' + namespace + item.name + str_array + ');\n'
 
     elif item.var_type in definitions.keywords_string:
         return 'fbJson.AddString(\'' + namespace + item.name + str_array + '\');\n'
@@ -39,6 +53,12 @@ def add_BasicType(namespace, item, str_array):
     else:
         return ''
 
+
+def add_enum(namespace, item: definitions.Enum):
+
+    res = 'fbJson.AddKey(\'' + item.name + '\');\n'
+    res = res + add_BasicType(namespace, item, '')
+    return res
 
 def add_SimpleVariable(namespace, item: definitions.SimpleVariable):
     res = 'fbJson.AddKey(\'' + item.name + '\');\n'
@@ -117,9 +137,13 @@ def parse_writer(object_list, start_namespace):
             indent_level = indent_level - 1
             write_fb_string = write_fb_string + add_ArrayVariableEnd(namespace, item)
             namespace = namespace.rsplit('.', 2)[0] + '.'
+        
+        elif isinstance(item, definitions.Enum):
+             write_fb_string = write_fb_string + add_enum(namespace, item)
 
         max_indent_level = max(max_indent_level, indent_level)
 
     write_fb_string = write_fb_string + footer
+    
     print (max_indent_level)
     return write_fb_string, get_local_var_str(max_indent_level)

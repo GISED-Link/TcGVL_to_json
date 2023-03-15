@@ -126,6 +126,9 @@ def parse_reader(object_list, start_namespace):
 
         elif isinstance(item, definitions.SimpleVariable):
             res = res + add_valueItem(namespace, item, parents[-1], 0)
+            
+        elif isinstance(item, definitions.Enum):
+             res = res + add_valueItem(namespace, item, parents[-1], 0)
 
         elif isinstance(item, definitions.ObjectVariableStart):
             res = res + add_objectStart(item, parents[-1])
