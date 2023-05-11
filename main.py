@@ -56,9 +56,9 @@ def save_config(config):
 
 
 def generate():
-    variable_to_parse, namesapce = extractor.extract_token_from_file(prj_config['file_to_extract'], prj_config['project_path'] + '/')
-    writer_st, writer_var = tc_sax_writter.parse_writer(variable_to_parse, namesapce + '.')
-    reader_st, reader_var = tc_sax_reader.parse_reader(variable_to_parse, namesapce + '.')
+    variable_to_parse, namespace = extractor.extract_token_from_file(prj_config['file_to_extract'], prj_config['project_path'] + '/')
+    writer_st, writer_var = tc_sax_writter.parse_writer(variable_to_parse, namespace + '.')
+    reader_st, reader_var = tc_sax_reader.parse_reader(variable_to_parse, namespace + '.')
 
     var_reader.delete('1.0', tk.END)
     var_reader.insert(tk.END, writer_var)
