@@ -36,6 +36,7 @@ def extract_from_string(text_to_search, search_for_json, namespace):
         elif flag_to_json:
             flag_to_json = False
 
+
 def search_file(path, type_name):
     name_to_search = type_name + '.TcDUT'
     for root, d_names, f_names in os.walk(path):
@@ -47,11 +48,13 @@ def search_file(path, type_name):
                 if file_name_tmp is not None:
                     return str(directory) + '/' + file_name_tmp
 
+
 def add_end_object(object_local, var_list):
     if isinstance(object_local, definitions.ArrayVariable):
         var_list.append(definitions.ArrayVariableEnd())
     else:
         var_list.append(definitions.ObjectVariableEnd())
+
 
 def add_start_object(object_local, var_list):
     if isinstance(object_local, definitions.ArrayVariable):
@@ -63,34 +66,52 @@ def add_start_object(object_local, var_list):
         var_list.append(
             definitions.ObjectVariableStart(object_local.namespace, object_local.name, object_local.var_type))
 
+
 def check_if_type_known_from_token(token_local, var_list, searched_path):
-    flag_type_known = False
     for sublist in definitions.keywords_supported:
         
         if token_local.var_type in sublist:
-            flag_type_known = True
             var_list.append(token_local)
-            break
-    if not flag_type_known:
-        print('search type ' + token_local.var_type)
-        file_name = search_file(searched_path, token_local.var_type)
-        if file_name is not None:    
-            if isinstance(token_local, definitions.ExtendedVariable):
-                print(f'file name of extended file is {file_name}')
-                print(f'namespace is {token_local.namespace}')
-                print(f'end_name is {token_local.end_name}')  
-                get_token_from_files(file_name, token_local.namespace + token_local.end_name + '.', var_list, searched_path)
-            else:
-                checkEnum,typeEnum=check_isEnum(file_name,searched_path)
-                if(checkEnum):
-                    enum=definitions.Enum(token_local.namespace,token_local.name,token_local.address,typeEnum)
-                    var_list.append(enum)
-                else:
-                    add_start_object(token_local, var_list)
-                    get_token_from_files(file_name, token_local.namespace + token_local.name + '.', var_list, searched_path)
-                    add_end_object(token_local, var_list)
+            return
+    
+    print('search type ' + token_local.var_type)
+    file_name = search_file(searched_path, token_local.var_type)
+
+    if file_name is None:
+        print('search in other libraries')
+        try:
+            f = open('additionalLib.txt')
+        except FileNotFoundError:
+            print('additionalLib.txt not found')
+            return None
+
+        for lib_path in f.readlines():
+            lib_path = lib_path.split('\n')[0]
+            print('search in: ' + lib_path)
+            file_name = search_file(lib_path, token_local.var_type)
+            if file_name is not None:
+                print('file name found is: ' + file_name)
+                searched_path = lib_path
+                break
+    
+    if file_name is not None:    
+        if isinstance(token_local, definitions.ExtendedVariable):
+            print(f'file name of extended file is {file_name}')
+            print(f'namespace is {token_local.namespace}')
+            print(f'end_name is {token_local.end_name}')  
+            get_token_from_files(file_name, token_local.namespace + token_local.end_name + '.', var_list, searched_path)
         else:
-            print('file not found')
+            is_enum, type_enum = check_isEnum(file_name,searched_path)
+            if is_enum:
+                enum = definitions.Enum(token_local.namespace, token_local.name, token_local.address, type_enum)
+                var_list.append(enum)
+            else:
+                add_start_object(token_local, var_list)
+                get_token_from_files(file_name, token_local.namespace + token_local.name + '.', var_list, searched_path)
+                add_end_object(token_local, var_list)
+    else:
+        print('file not found')
+
 
 def get_token_from_files(type_file_name, namespace, variable_to_parse, search_path):
     file_to_extract = [type_file_name]
@@ -112,6 +133,7 @@ def get_token_from_files(type_file_name, namespace, variable_to_parse, search_pa
 
 def extract_token_from_file(tcgvl_file_name, search_path):
     ''' extract all {attribute \'to_json\'} '''
+
     variable_to_parse = []
     my_file = open(tcgvl_file_name, mode='rt')
     text = my_file.read()
@@ -139,4 +161,4 @@ def check_isEnum(type_file_name, search_path):
         typeEnum=find[0][1]
         result=True
     else: result=False
-    return result,typeEnum
+    return result, typeEnum
