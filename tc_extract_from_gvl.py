@@ -17,7 +17,7 @@ def extract_from_string(text_to_search, search_for_json, namespace):
         index = mo.lastindex
         if kind == 'VARIABLE':
             if flag_to_json or not search_for_json:
-                print(f'VARIABLE type found with name {mo.groups()[index]}')
+                print(f'VARIABLE type found with name {mo.groups()[index]} and type {mo.groups()[index + 2]}')
                 yield definitions.SimpleVariable(namespace, mo.groups()[index], mo.groups()[index + 1],
                                                  mo.groups()[index + 2])
         elif kind == 'ARRAY':

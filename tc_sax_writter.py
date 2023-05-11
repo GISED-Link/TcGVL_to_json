@@ -25,21 +25,20 @@ def add_endArray():
 
 def add_BasicType(namespace, item, str_array):
     if item.var_type in definitions.keywords_int:
-        match item.var_type:
-            case "DWORD":
-                return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
-            case "ULINT":
-                return 'fbJson.AddUlint(' + namespace + item.name + str_array + ');\n'
-            case "LWORD":
-                return 'fbJson.AddUlint(' + namespace + item.name + str_array + ');\n'
-            case "LINT":
-                return 'fbJson.AddLint(' + namespace + item.name + str_array + ');\n'
-            case "DWORD":
-                return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
-            case "UDINT":
-                return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
-            case _:
-                return 'fbJson.AddDint(' + namespace + item.name + str_array + ');\n'
+        if item.var_type == 'DWORD':
+            return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
+        elif item.var_type == 'ULINT':
+            return 'fbJson.AddUlint(' + namespace + item.name + str_array + ');\n'
+        elif item.var_type == 'LWORD':
+            return 'fbJson.AddUlint(' + namespace + item.name + str_array + ');\n'
+        elif item.var_type == 'LINT':
+            return 'fbJson.AddLint(' + namespace + item.name + str_array + ');\n'
+        elif item.var_type == 'DWORD':
+            return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
+        elif item.var_type == 'UDINT':
+            return 'fbJson.AddUdint(' + namespace + item.name + str_array + ');\n'
+        else:
+            return 'fbJson.AddDint(' + namespace + item.name + str_array + ');\n'
 
     elif item.var_type in definitions.keywords_string:
         return 'fbJson.AddString(\'' + namespace + item.name + str_array + '\');\n'
@@ -50,12 +49,15 @@ def add_BasicType(namespace, item, str_array):
     elif item.var_type in definitions.keywords_bool:
         return 'fbJson.AddBool(' + namespace + item.name + str_array + ');\n'
 
+    elif item.var_type in definitions.keywords_time_res_ms:
+        return 'fbJson.AddDint(TIME_TO_DINT(' + namespace + item.name + str_array + '));\n'
+
     else:
+        print('type <{type}> not found during writter creation'.format(type=item.var_type))
         return ''
 
 
 def add_enum(namespace, item: definitions.Enum):
-
     res = 'fbJson.AddKey(\'' + item.name + '\');\n'
     res = res + add_BasicType(namespace, item, '')
     return res
@@ -105,6 +107,7 @@ def get_local_var_str(i_level):
         res = res + 'i'*i + ' : INT;\n'
 
     return res
+
 
 def parse_writer(object_list, start_namespace):
     write_fb_string = ''

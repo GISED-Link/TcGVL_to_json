@@ -75,7 +75,12 @@ def add_valueItem(namespace, item, json_parent, array_level):
         elif item.var_type in definitions.keywords_bool:
             res = res + namespace + var_name + ' := TO_' + item.var_type + '(' + JSON_FB + '.GetBool(' + prefixed_v + '));\n'
 
-        res = res + 'END_IF\n'
+        elif item.var_type in definitions.keywords_time_res_ms:
+            res = res + namespace + var_name + ' := TO_' + item.var_type + '(' + JSON_FB + '.GetInt(' + prefixed_v + '));\n'
+
+        if 0 == array_level:
+            res = res + 'END_IF\n'
+
         return res
 
     except AttributeError:

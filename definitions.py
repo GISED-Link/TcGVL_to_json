@@ -4,7 +4,7 @@ keywords_int = ['BYTE', 'WORD', 'DWORD', 'LWORD', 'SINT', 'USINT', 'INT', 'UINT'
 keywords_bool = ['BOOL']
 keywords_float = ['REAL', 'LREAL']
 keywords_string = ['STRING', 'WSTRING']
-keywords_time = ['TIME', 'TIME_OF_DAY', 'DATE', 'DATE_AND_TIME', 'LTIME']
+keywords_time_res_ms = ['TIME', 'TIME_OF_DAY']
 keywords_array = ['ARRAY']
 keywords_unsupported = ['ANY', 'ANY_BIT', 'ANY_DATE', 'ANY_NUM', 'ANY_REAL', 'ANY_INT', 'ANY_STRING', 'XINT', 'UXINT',
                         'XWORD', 'PVOID', 'POINTER', 'REFERENCE']
@@ -12,7 +12,7 @@ keywords_union = ['UNION']
 keywords_struct = ['STRUCT']
 keywords_enum = ['ENUM']
 
-keywords_supported = [keywords_int, keywords_bool, keywords_float, keywords_string]
+keywords_supported = [keywords_int, keywords_bool, keywords_float, keywords_string, keywords_time_res_ms]
 
 find_type = r'.*:[ \t]*([A-z]+).*;.*$'
 find_comment = r'^.*[\/]*'
