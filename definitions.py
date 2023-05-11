@@ -16,7 +16,7 @@ keywords_supported = [keywords_int, keywords_bool, keywords_float, keywords_stri
 
 find_type = r'.*:[ \t]*([A-z]+).*;.*$'
 find_comment = r'^.*[\/]*'
-find_var = r'[ \t]*(\w*)[ \t\n]*(AT\s*%[.]*)?[ \t\n]*:[ \t\n]*(\w*)[ \t\n]*(:=)?[ \t\n]*\w*[ \t\n]*;'
+find_var = r'[ \t]*(\w*)[ \t\n]*(AT\s*%[.]*)?[ \t\n]*:[ \t\n]*(\w*)[ \t\n]*(:=\s*((.\#)?\d.*)?)?;'
 find_var_array = r'[ \t]*(\w+)[ \t\n]+(AT%[A-z\d*]+)?[ \t\n]*:[ \t\n]*ARRAY[ \t\n]*.[ \t\n]*([A-z\d]+)[ \t\n]*\.\.[ \t\n]*([ A-z0-9\+\-\d\.]+)[ \t\n]*.[ \t\n]+OF[ \t\n]+([A-z\d]+);'
 find_to_json_attribute = r'\n[ \t]*\{[ \t]*attribute[ \t]+\'to_json\'[ \t]*\}[ \t]*\n'
 find_extends = r'TYPE[ \t]+.*EXTENDS[ \t]+(\w+)[ \t*:[ \t]*\n'
