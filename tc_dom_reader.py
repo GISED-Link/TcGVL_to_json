@@ -103,8 +103,12 @@ def get_local_var_str(var_list, i_level):
     res = JSON_FB + ' : REFERENCE TO FB_JsonDomParser;\n'
     res = res + JSON_FB + ' : REFERENCE TO SJsonValue;\n\n'
 
+    name_list = set()
+
     for x in var_list:
-        res = res + JSON_PREFIX + x + ': SJsonValue;\n'
+        if x not in name_list:
+            name_list.add(x)
+            res = res + JSON_PREFIX + x + ': SJsonValue;\n'
 
     for i in range(1, i_level + 1):
         res = res + JSON_PREFIX + 'i' * i + ' : SJsonValue;\n'
