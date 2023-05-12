@@ -1,7 +1,7 @@
 # transform variable to 2 json FB's
 
 
-import tc_sax_reader
+import tc_dom_reader
 import tc_sax_writter
 import tc_extract_from_gvl as extractor
 import os
