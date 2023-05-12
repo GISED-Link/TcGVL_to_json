@@ -4,10 +4,10 @@ JSON_VAR = 'refJsonWriter'
 
 header = '{json_var}.ResetDocument();\n' \
          '// global object\n' \
-         '{json_var}.StartObject();\n\n'.format(json_var = JSON_VAR)
+         '{json_var}.StartObject();\n\n'.format(json_var=JSON_VAR)
 
 footer = '\n// end global object\n' \
-         '{json_var}.EndObject();\n'.format(json_var = JSON_VAR)
+         '{json_var}.EndObject();\n'.format(json_var=JSON_VAR)
 
 
 def add_startArray(start, end, i_level):
@@ -61,6 +61,7 @@ def add_enum(namespace, item: definitions.Enum):
     res = res + add_BasicType(namespace, item, '')
     return res
 
+
 def add_SimpleVariable(namespace, item: definitions.SimpleVariable):
     res = JSON_VAR + '.AddKey(\'' + item.name + '\');\n'
     res = res + add_BasicType(namespace, item, '')
@@ -102,8 +103,8 @@ def add_ArrayVariableEnd(namespace, item: definitions.ArrayVariableEnd):
 
 def get_local_var_str(i_level):
     res = 'refJsonWriter : REFERENCE TO FB_JsonSaxWriter;\n\n'
-    for i in range(1, i_level+1):
-        res = res + 'i'*i + ' : INT;\n'
+    for i in range(1, i_level + 1):
+        res = res + 'i' * i + ' : INT;\n'
 
     return res
 
@@ -139,13 +140,13 @@ def parse_writer(object_list, start_namespace):
             indent_level = indent_level - 1
             write_fb_string = write_fb_string + add_ArrayVariableEnd(namespace, item)
             namespace = namespace.rsplit('.', 2)[0] + '.'
-        
+
         elif isinstance(item, definitions.Enum):
-             write_fb_string = write_fb_string + add_enum(namespace, item)
+            write_fb_string = write_fb_string + add_enum(namespace, item)
 
         max_indent_level = max(max_indent_level, indent_level)
 
     write_fb_string = write_fb_string + footer
-    
-    print (max_indent_level)
+
+    print(max_indent_level)
     return write_fb_string, get_local_var_str(max_indent_level)

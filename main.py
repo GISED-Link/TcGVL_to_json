@@ -10,7 +10,6 @@ import tkinter as tk
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
 
-
 CONFIG_FILE_NAME = 'tc_extractor_config.json'
 
 
@@ -56,7 +55,8 @@ def save_config(config):
 
 
 def generate():
-    variable_to_parse, namespace = extractor.extract_token_from_file(prj_config['file_to_extract'], prj_config['project_path'] + '/')
+    variable_to_parse, namespace = extractor.extract_token_from_file(prj_config['file_to_extract'],
+                                                                     prj_config['project_path'] + '/')
     writer_st, writer_var = tc_sax_writter.parse_writer(variable_to_parse, namespace + '.')
     reader_st, reader_var = tc_dom_reader.parse_reader(variable_to_parse, namespace + '.')
 
@@ -75,9 +75,8 @@ def generate():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-
     prj_config = load_config()
-    
+
     root = tk.Tk()
     root.title('tc json st code generator')
     root.geometry("800x600")

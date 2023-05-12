@@ -24,13 +24,13 @@ def extract_from_string(text_to_search, search_for_json, namespace):
             if flag_to_json or not search_for_json:
                 print(f'ARRAY type found with name {mo.groups()[index]}')
                 yield definitions.ArrayVariable(namespace, mo.groups()[index], mo.groups()[index + 1],
-                                        mo.groups()[index + 2], mo.groups()[index + 3], mo.groups()[index + 4])
+                                                mo.groups()[index + 2], mo.groups()[index + 3], mo.groups()[index + 4])
 
         elif kind == 'EXTENDED' and not search_for_json:
             print(f'Extended type found with name {mo.groups()[index]}')
             namespace_split, var_name, *garbage = namespace.rsplit('.', 2)
             yield definitions.ExtendedVariable(namespace_split + '.', var_name, mo.groups()[index])
-        
+
         if kind == 'TO_JSON':
             flag_to_json = True
         elif flag_to_json:
@@ -69,11 +69,11 @@ def add_start_object(object_local, var_list):
 
 def check_if_type_known_from_token(token_local, var_list, searched_path):
     for sublist in definitions.keywords_supported:
-        
+
         if token_local.var_type in sublist:
             var_list.append(token_local)
             return
-    
+
     print('search type ' + token_local.var_type)
     file_name = search_file(searched_path, token_local.var_type)
 
@@ -93,15 +93,15 @@ def check_if_type_known_from_token(token_local, var_list, searched_path):
                 print('file name found is: ' + file_name)
                 searched_path = lib_path
                 break
-    
-    if file_name is not None:    
+
+    if file_name is not None:
         if isinstance(token_local, definitions.ExtendedVariable):
             print(f'file name of extended file is {file_name}')
             print(f'namespace is {token_local.namespace}')
-            print(f'end_name is {token_local.end_name}')  
+            print(f'end_name is {token_local.end_name}')
             get_token_from_files(file_name, token_local.namespace + token_local.end_name + '.', var_list, searched_path)
         else:
-            is_enum, type_enum = check_isEnum(file_name,searched_path)
+            is_enum, type_enum = check_isEnum(file_name, searched_path)
             if is_enum:
                 enum = definitions.Enum(token_local.namespace, token_local.name, token_local.address, type_enum)
                 var_list.append(enum)
@@ -143,22 +143,23 @@ def extract_token_from_file(tcgvl_file_name, search_path):
     namespace = namespace.rsplit('/', 1)[1]
     for token in extract_from_string(text, True, namespace + '.'):
         check_if_type_known_from_token(token, variable_to_parse, search_path)
-        
 
     return variable_to_parse, namespace
 
+
 def check_isEnum(type_file_name, search_path):
-    typeEnum=""
+    typeEnum = ""
     file_to_extract = [type_file_name]
     extract_index = 0
     my_file_local = open(search_path + file_to_extract[extract_index], mode='rt')
     extract_index = extract_index + 1
     text_local = my_file_local.read()
     my_file_local.close()
-    find=re.findall(definitions.find_enum,text_local)
-    
-    if(find!=[]):
-        typeEnum=find[0][1]
-        result=True
-    else: result=False
+    find = re.findall(definitions.find_enum, text_local)
+
+    if (find != []):
+        typeEnum = find[0][1]
+        result = True
+    else:
+        result = False
     return result, typeEnum

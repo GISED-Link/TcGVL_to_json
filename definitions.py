@@ -21,8 +21,7 @@ find_var_array = r'[ \t]*(\w+)[ \t\n]+(AT%[A-z\d*]+)?[ \t\n]*:[ \t\n]*ARRAY[ \t\
 find_to_json_attribute = r'\n[ \t]*\{[ \t]*attribute[ \t]+\'to_json\'[ \t]*\}[ \t]*\n'
 find_extends = r'TYPE[ \t]+.*EXTENDS[ \t]+(\w+)[ \t*:[ \t]*\n'
 find_enum = r'([TYPE]+.*:+[ \t\n]*\(+[ \t\n]*[\w\W]*\)+[ \t\n]*([A-z]+)*[ \t\n]*;[ \t\n]*END_TYPE)'
-find_type_enum=r'\)+[ \t\n]*([A-z]+)*[ \t\n]*;'
-
+find_type_enum = r'\)+[ \t\n]*([A-z]+)*[ \t\n]*;'
 
 
 class ArrayVariable(NamedTuple):
@@ -66,6 +65,7 @@ class ExtendedVariable(NamedTuple):
     namespace: str
     end_name: str  # name of the variable that hold the base type
     var_type: str
+
 
 class Enum(NamedTuple):
     namespace: str
